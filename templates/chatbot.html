@@ -1,88 +1,185 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Chatbot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediAssist | Medical AI</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-
 <body>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-8 col-xl-6 chat">
-                <div class="card">
-                    <div class="card-header msg_head">
-                        <div class="d-flex bd-highlight">
-                            <div class="img_cont">
-                                <img src="https://cdn-icons-png.flaticon.com/512/387/387569.png"
-                                    class="rounded-circle user_img">
-                                <!-- <img src="https://www.prdistribution.com/spirit/uploads/pressreleases/2019/newsreleases/d83341deb75c4c4f6b113f27b1e42cd8-chatbot-florence-already-helps-thousands-of-patients-to-remember-their-medication.png" class="rounded-circle user_img"> -->
-                                <span class="online_icon"></span>
-                            </div>
-                            <div class="user_info">
-                                <span>Medical Chatbot</span>
-                                <p>Ask me anything!</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="messageFormeight" class="card-body msg_card_body">
+    <main class="app-shell">
 
-
-                    </div>
-                    <div class="card-footer">
-                        <form id="messageArea" class="input-group">
-                            <input type="text" id="text" name="msg" placeholder="Type your message..."
-                                autocomplete="off" class="form-control type_msg" required />
-                            <div class="input-group-append">
-                                <button type="submit" id="send" class="input-group-text send_btn"><i
-                                        class="fas fa-location-arrow"></i></button>
-                            </div>
-                        </form>
-                    </div>
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">+</div>
+                <div>
+                    <strong>MediAssist</strong>
+                    <span>Medical AI Assistant</span>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <button class="new-chat" id="newChat"><span>+</span> New conversation</button>
+
+            <div class="sidebar-section">
+                <p class="section-label">Quick questions</p>
+                <button class="quick-question">What are common flu symptoms?</button>
+                <button class="quick-question">How can I improve my sleep?</button>
+                <button class="quick-question">What causes headaches?</button>
+                <button class="quick-question">What is a healthy diet?</button>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="notice">
+                    <span class="notice-icon">i</span>
+                    <p>For educational purposes only. Consult a qualified healthcare professional for medical advice.
+                    </p>
+                </div>
+            </div>
+        </aside>
+
+        <section class="chat-panel">
+            <header class="chat-header">
+                <div class="assistant-profile">
+                    <div class="avatar">+<i></i></div>
+                    <div>
+                        <h1>MediAssist</h1>
+                        <p><span class="status-dot"></span> Online · AI-powered medical assistant</p>
+                    </div>
+                </div>
+                <div class="header-badge">AI ASSISTANT</div>
+            </header>
+
+            <div id="messageFormeight" class="messages">
+                <div class="welcome">
+                    <div class="welcome-icon">+</div>
+                    <h2>How can I help you today?</h2>
+                    <p>Ask a health-related question and I'll provide information from the medical knowledge base.</p>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <form id="messageArea" class="message-form">
+                    <input type="text" id="text" name="msg" placeholder="Ask a medical question..." autocomplete="off"
+                        required>
+                    <button type="submit" id="send" aria-label="Send message"><span>↑</span></button>
+                </form>
+                <p class="input-hint">MediAssist can make mistakes. Verify important health information with a
+                    professional.</p>
+            </div>
+        </section>
+    </main>
 
     <script>
         $(document).ready(function () {
-            $("#messageArea").on("submit", function (event) {
-                const date = new Date();
-                const hour = date.getHours();
-                const minute = date.getMinutes();
-                const str_time = hour + ":" + minute;
-                var rawText = $("#text").val();
+            const messageBox = $("#messageFormeight");
 
-                var userHtml = '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">' + rawText + '<span class="msg_time_send">' + str_time + '</span></div><div class="img_cont_msg"><img src="https://i.ibb.co/d5b84Xw/Untitled-design.png" class="rounded-circle user_img_msg"></div></div>';
+            function getTime() {
+                return new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+            }
 
-                $("#text").val("");
-                $("#messageFormeight").append(userHtml);
+            function escapeHtml(text) {
+                return $("<div>").text(text).html();
+            }
+
+            function scrollToBottom() {
+                messageBox.stop().animate({ scrollTop: messageBox[0].scrollHeight }, 250);
+            }
+
+            function addUserMessage(text) {
+                messageBox.find(".welcome").remove();
+
+                messageBox.append(`
+            <div class="message-row user-row">
+                <div class="bubble user-bubble">
+                    <p>${escapeHtml(text)}</p>
+                    <span class="message-time">${getTime()}</span>
+                </div>
+                <div class="mini-avatar user-avatar">You</div>
+            </div>
+        `);
+                scrollToBottom();
+            }
+
+            function addBotMessage(text) {
+                messageBox.append(`
+            <div class="message-row bot-row">
+                <div class="mini-avatar bot-avatar">+</div>
+                <div class="bubble bot-bubble">
+                    <p>${escapeHtml(text).replace(/\n/g, "<br>")}</p>
+                    <span class="message-time">${getTime()}</span>
+                </div>
+            </div>
+        `);
+                scrollToBottom();
+            }
+
+            function addTyping() {
+                messageBox.append(`
+            <div class="message-row bot-row" id="typing">
+                <div class="mini-avatar bot-avatar">+</div>
+                <div class="bubble bot-bubble typing-bubble">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        `);
+                scrollToBottom();
+            }
+
+            function sendMessage(rawText) {
+                const text = rawText.trim();
+                if (!text) return;
+
+                addUserMessage(text);
+                $("#text").val("").prop("disabled", true);
+                $("#send").prop("disabled", true);
+                addTyping();
 
                 $.ajax({
-                    data: {
-                        msg: rawText,
-                    },
+                    data: { msg: text },
                     type: "POST",
-                    url: "/get",
+                    url: "/get"
                 }).done(function (data) {
-                    var botHtml = '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' + data + '<span class="msg_time">' + str_time + '</span></div></div>';
-                    $("#messageFormeight").append($.parseHTML(botHtml));
+                    $("#typing").remove();
+                    addBotMessage(data);
+                }).fail(function () {
+                    $("#typing").remove();
+                    addBotMessage("Sorry, I couldn't process that request right now. Please try again.");
+                }).always(function () {
+                    $("#text").prop("disabled", false).focus();
+                    $("#send").prop("disabled", false);
                 });
+            }
+
+            $("#messageArea").on("submit", function (event) {
                 event.preventDefault();
+                sendMessage($("#text").val());
+            });
+
+            $(".quick-question").on("click", function () {
+                sendMessage($(this).text());
+            });
+
+            $("#newChat").on("click", function () {
+                messageBox.html(`
+            <div class="welcome">
+                <div class="welcome-icon">+</div>
+                <h2>How can I help you today?</h2>
+                <p>Ask a health-related question and I'll provide information from the medical knowledge base.</p>
+            </div>
+        `);
+                $("#text").focus();
             });
         });
     </script>
-
 </body>
 
 </html>
