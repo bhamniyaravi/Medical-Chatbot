@@ -162,7 +162,6 @@ Add your API keys:
 ```env
 PINECONE_API_KEY=your_pinecone_api_key
 GROQ_API_KEY=your_groq_api_key
-FLASK_SECRET_KEY=your_flask_secret_key
 ```
 
 **Do not upload your `.env` file to GitHub.**
