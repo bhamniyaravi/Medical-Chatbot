@@ -402,7 +402,6 @@ It stores the embeddings generated from the medical documents and retrieves rele
 |---|---|
 | `PINECONE_API_KEY` | Pinecone vector database access |
 | `GROQ_API_KEY` | Groq API access |
-| `FLASK_SECRET_KEY` | Flask application secret key |
 
 ---
 
